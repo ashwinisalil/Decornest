@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DecoreNest — Furniture for Every Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#233326;
+    --forest-soft:#57685A;
+    --cream:#FBF6EC;
+    --cream-dim:#F1E8D4;
+    --card:#FFFFFF;
+    --mustard:#C9973F;
+    --mustard-dark:#A87A2C;
+    --mustard-dim:#F5E7C9;
+    --rust:#AD5A34;
+    --rust-dim:#F4E0D5;
+    --sage:#7C8F6E;
+    --sage-dim:#E9EEE3;
+    --ink:#26241E;
+    --line:#E6DCC6;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;scroll-behavior:smooth;}
+  body{font-family:'Work Sans',sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'DM Serif Display',serif;font-weight:400;color:var(--forest);letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--mustard-dim);}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ===== NAV ===== */
+  .navbar{
+    position:sticky;top:0;z-index:50;background:var(--cream);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1240px;margin:0 auto;padding:16px 32px;
+    display:flex;align-items:center;gap:28px;
+  }
+  .logo{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+  .logo .mark{
+    width:32px;height:32px;border-radius:50%;background:var(--mustard);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Serif Display',serif;color:var(--forest);font-size:17px;
+  }
+  .logo h1{font-size:21px;margin:0;}
+  .nav-links{display:flex;gap:6px;flex:1;}
+  .nav-links a{
+    padding:9px 14px;border-radius:20px;font-size:14px;font-weight:500;color:var(--forest-soft);
+  }
+  .nav-links a:hover{background:var(--cream-dim);color:var(--forest);}
+  .nav-links a.active{background:var(--forest);color:var(--cream);}
+  .nav-search{
+    display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+    padding:8px 14px;border-radius:20px;font-size:13px;color:var(--forest-soft);width:220px;
+  }
+  .nav-search svg{opacity:0.5;flex-shrink:0;}
+  .nav-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .icon-btn{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+    display:flex;align-items:center;justify-content:center;color:var(--forest);cursor:pointer;position:relative;
+  }
+  .icon-btn:hover{border-color:var(--forest-soft);}
+  .icon-btn .badge{
+    position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;padding:0 3px;border-radius:9px;
+    background:var(--rust);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  /* ===== PAGE LAYOUT ===== */
+  .page{display:none;}
+  .page.active{display:block;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  /* ===== HOME ===== */
+  .hero{background:var(--forest);color:var(--cream);padding:70px 0;overflow:hidden;position:relative;}
+  .hero .wrap{display:flex;align-items:center;gap:48px;}
+  .hero-text{flex:1;min-width:280px;}
+  .hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mustard);margin-bottom:16px;}
+  .hero h2{font-size:48px;color:var(--cream);margin:0 0 16px;line-height:1.08;}
+  .hero p{font-size:15.5px;color:rgba(251,246,236,0.75);max-width:420px;margin:0 0 28px;line-height:1.6;}
+  .hero-actions{display:flex;gap:12px;}
+  .hero-visual{
+    flex:1;min-width:260px;height:320px;border-radius:20px;
+    background:linear-gradient(135deg,var(--mustard) 0%, var(--rust) 100%);
+    display:flex;align-items:center;justify-content:center;font-size:110px;
+  }
+
+  .btn{padding:13px 26px;border-radius:26px;font-size:13.5px;font-weight:600;border:none;display:inline-flex;align-items:center;gap:8px;}
+  .btn-primary{background:var(--mustard);color:var(--forest);}
+  .btn-primary:hover{background:var(--mustard-dark);}
+  .btn-outline{background:transparent;border:1px solid rgba(251,246,236,0.4);color:var(--cream);}
+  .btn-outline:hover{border-color:var(--cream);}
+  .btn-dark{background:var(--forest);color:var(--cream);}
+  .btn-dark:hover{background:#1a2519;}
+  .btn-full{width:100%;justify-content:center;}
+
+  .section{padding:64px 0;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:12px;}
+  .section-head h3{font-size:30px;margin:0;}
+  .section-head .sub{font-size:13.5px;color:var(--forest-soft);margin-top:4px;}
+  .section-head .see-all{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust);text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;}
+
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .cat-card{
+    border-radius:16px;height:180px;position:relative;overflow:hidden;
+    display:flex;align-items:flex-end;padding:20px;color:#fff;cursor:pointer;
+  }
+  .cat-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(35,51,38,0.05),rgba(35,51,38,0.78));}
+  .cat-card .txt{position:relative;z-index:1;}
+  .cat-card .cname{font-family:'DM Serif Display',serif;font-size:20px;}
+  .cat-card .ccount{font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:0.85;margin-top:3px;}
+
+  .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .product-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    transition:box-shadow 0.15s, transform 0.15s;
+  }
+  .product-card:hover{box-shadow:0 10px 26px rgba(35,51,38,0.09);transform:translateY(-2px);}
+  .product-art{
+    height:150px;display:flex;align-items:center;justify-content:center;font-size:50px;
+    position:relative;cursor:pointer;
+  }
+  .product-badge{
+    position:absolute;top:10px;left:10px;font-size:10px;font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;letter-spacing:0.04em;padding:4px 9px;border-radius:20px;background:var(--forest);color:var(--cream);
+  }
+  .product-badge.sale{background:var(--rust);}
+  .wish-btn{
+    position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;
+    background:rgba(255,255,255,0.9);border:none;display:flex;align-items:center;justify-content:center;color:var(--forest-soft);
+  }
+  .wish-btn.active{color:var(--rust);}
+  .product-body{padding:14px 15px 16px;}
+  .product-cat{font-size:11px;color:var(--forest-soft);margin-bottom:3px;}
+  .product-name{font-size:14px;font-weight:600;color:var(--forest);cursor:pointer;}
+  .product-rating{font-size:11.5px;color:var(--mustard-dark);margin-top:4px;}
+  .product-rating .count{color:var(--forest-soft);}
+  .product-foot{display:flex;justify-content:space-between;align-items:center;margin-top:11px;}
+  .price-row{display:flex;align-items:baseline;gap:7px;}
+  .price{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--forest);font-weight:500;}
+  .price-old{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--forest-soft);text-decoration:line-through;}
+  .add-btn{
+    width:34px;height:34px;border-radius:50%;background:var(--forest);color:var(--cream);border:none;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .add-btn:hover{background:var(--mustard-dark);}
+
+  .strip{background:var(--sage-dim);}
+  .strip .wrap{display:flex;justify-content:space-around;padding:26px 32px;flex-wrap:wrap;gap:18px;}
+  .strip-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--forest);}
+  .strip-item svg{color:var(--sage);flex-shrink:0;}
+
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .testi-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+  .testi-stars{color:var(--mustard);font-size:13px;margin-bottom:10px;}
+  .testi-body{font-size:13.5px;line-height:1.6;color:var(--ink);margin-bottom:14px;}
+  .testi-who{font-size:12.5px;font-weight:600;color:var(--forest);}
+
+  .newsletter{background:var(--forest);color:var(--cream);padding:56px 0;text-align:center;}
+  .newsletter h3{color:var(--cream);font-size:28px;margin:0 0 10px;}
+  .newsletter p{color:rgba(251,246,236,0.7);font-size:14px;margin:0 0 24px;}
+  .newsletter-form{display:flex;gap:10px;max-width:420px;margin:0 auto;}
+  .newsletter-form input{
+    flex:1;padding:13px 16px;border-radius:26px;border:none;font-size:13.5px;font-family:'Work Sans',sans-serif;
+  }
+
+  footer{border-top:1px solid var(--line);padding:40px 0 30px;}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px;}
+  .foot-grid h4{font-size:12px;text-transform:uppercase;letter-spacing:0.08em;color:var(--forest);margin:0 0 12px;}
+  .foot-grid a{display:block;font-size:13px;color:var(--forest-soft);padding:5px 0;}
+  .foot-bottom{text-align:center;font-size:11.5px;color:var(--forest-soft);margin-top:30px;padding-top:20px;border-top:1px solid var(--line);}
+
+  /* ===== SHOP ===== */
+  .shop-head{padding:40px 0 20px;}
+  .shop-head .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);}
+  .shop-head h2{font-size:34px;margin:8px 0 0;}
+  .shop-layout{display:grid;grid-template-columns:220px 1fr;gap:32px;padding-bottom:70px;}
+  .filter-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;align-self:start;}
+  .filter-box h4{font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--forest);margin:0 0 12px;}
+  .filter-opt{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13.5px;color:var(--forest-soft);cursor:pointer;}
+  .filter-opt input{accent-color:var(--forest);}
+  .filter-opt.selected{color:var(--forest);font-weight:600;}
+  hr.fdiv{border:none;border-top:1px solid var(--line);margin:16px 0;}
+  .price-range{font-size:12.5px;color:var(--forest-soft);}
+  .price-range input[type=range]{width:100%;accent-color:var(--mustard);margin-top:8px;}
+
+  .shop-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+  .result-count{font-size:13px;color:var(--forest-soft);}
+  .sort-select{padding:9px 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);font-size:13px;color:var(--forest);}
+
+  /* ===== PRODUCT DETAIL ===== */
+  .detail-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:40px 0 70px;}
+  .detail-art{
+    height:420px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:130px;
+  }
+  .detail-info .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--rust);}
+  .detail-info h2{font-size:32px;margin:10px 0 8px;}
+  .detail-rating{font-size:13px;color:var(--mustard-dark);margin-bottom:16px;}
+  .detail-price{display:flex;align-items:baseline;gap:10px;margin-bottom:20px;}
+  .detail-price .price{font-size:26px;}
+  .detail-desc{font-size:14px;color:var(--forest-soft);line-height:1.7;margin-bottom:24px;}
+  .option-group{margin-bottom:20px;}
+  .option-group .label{font-size:12px;font-weight:600;color:var(--forest);margin-bottom:9px;display:block;}
+  .swatch-opts{display:flex;gap:9px;}
+  .swatch-opt{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+  .swatch-opt.selected{border-color:var(--forest);}
+  .qty-row{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+  .qty-control{display:flex;align-items:center;border:1px solid var(--line);border-radius:24px;overflow:hidden;}
+  .qty-control button{width:36px;height:36px;border:none;background:var(--card);font-size:16px;color:var(--forest);}
+  .qty-control span{width:36px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:14px;}
+  .detail-actions{display:flex;gap:12px;}
+  .spec-list{margin-top:26px;border-top:1px solid var(--line);padding-top:20px;}
+  .spec-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid var(--line);}
+  .spec-row span:first-child{color:var(--forest-soft);}
+  .spec-row span:last-child{color:var(--forest);font-weight:500;}
+
+  /* ===== CART ===== */
+  .cart-layout{display:grid;grid-template-columns:1.8fr 1fr;gap:32px;padding:40px 0 70px;align-items:start;}
+  .cart-item{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+  .cart-thumb{width:70px;height:70px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;}
+  .cart-item .info{flex:1;min-width:0;}
+  .cart-item .name{font-size:14.5px;font-weight:600;color:var(--forest);}
+  .cart-item .meta{font-size:11.5px;color:var(--forest-soft);margin-top:2px;}
+  .cart-item .price{font-size:14px;margin-top:6px;}
+  .cart-qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:22px;overflow:hidden;flex-shrink:0;}
+  .cart-qty button{width:30px;height:30px;border:none;background:var(--card);font-size:14px;color:var(--forest);}
+  .cart-qty span{width:28px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+  .remove-btn{color:var(--rust);font-size:12px;font-family:'IBM Plex Mono',monospace;background:none;border:none;text-transform:uppercase;flex-shrink:0;}
+  .summary-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+  .summary-box h4{font-size:15px;margin:0 0 16px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--forest);}
+  .summary-row{display:flex;justify-content:space-between;font-size:13.5px;color:var(--forest-soft);padding:8px 0;}
+  .summary-row.total{border-top:1px solid var(--line);margin-top:8px;padding-top:14px;font-size:16px;color:var(--forest);font-weight:600;}
+  .promo-row{display:flex;gap:8px;margin:14px 0;}
+  .promo-row input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:20px;font-size:12.5px;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--forest-soft);}
+  .empty-state .big{font-size:50px;margin-bottom:16px;}
+
+  /* ===== CHECKOUT ===== */
+  .checkout-layout{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;padding:40px 0 70px;align-items:start;}
+  .checkout-steps{display:flex;gap:10px;margin-bottom:26px;}
+  .cstep{font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--forest-soft);padding:7px 14px;border-radius:20px;background:var(--cream-dim);}
+  .cstep.active{background:var(--forest);color:var(--cream);}
+  .form-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px;}
+  .form-panel h4{font-size:16px;margin:0 0 16px;font-weight:400;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--forest);margin-bottom:6px;}
+  .field input,.field select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Work Sans',sans-serif;}
+  .pay-opts{display:flex;gap:10px;margin-bottom:16px;}
+  .pay-opt{flex:1;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:12.5px;cursor:pointer;}
+  .pay-opt.selected{border-color:var(--forest);background:var(--cream-dim);font-weight:600;}
+  .mini-item{display:flex;justify-content:space-between;font-size:12.5px;color:var(--forest-soft);padding:6px 0;}
+
+  /* ===== ACCOUNT ===== */
+  .account-layout{display:grid;grid-template-columns:220px 1fr;gap:32px;padding:40px 0 70px;}
+  .account-nav{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;align-self:start;}
+  .account-nav a{display:block;padding:10px 12px;border-radius:8px;font-size:13.5px;color:var(--forest-soft);margin-bottom:2px;}
+  .account-nav a.active{background:var(--forest);color:var(--cream);font-weight:600;}
+  .order-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;}
+  .order-top{display:flex;justify-content:space-between;margin-bottom:10px;}
+  .order-top .oid{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust);}
+  .order-top .odate{font-size:12px;color:var(--forest-soft);}
+  .order-status{font-size:10.5px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:var(--sage-dim);color:#4B5B3F;}
+  .order-status.transit{background:var(--mustard-dim);color:#8A6321;}
+  .order-line{font-size:13px;color:var(--ink);display:flex;justify-content:space-between;padding:4px 0;}
+
+  @media (max-width: 980px){
+    .nav-links,.nav-search{display:none;}
+    .cat-grid,.product-grid{grid-template-columns:repeat(2,1fr);}
+    .shop-layout,.cart-layout,.checkout-layout,.account-layout,.detail-layout{grid-template-columns:1fr;}
+    .testi-grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
+  :focus-visible{outline:2px solid var(--rust);outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="nav-inner">
+    <div class="logo"><div class="mark">n</div><h1>DecoreNest</h1></div>
+    <div class="nav-links">
+      <a data-page="home" class="active">Home</a>
+      <a data-page="shop">Shop</a>
+      <a data-page="account">Orders</a>
+    </div>
+    <div class="nav-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search furniture…
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="wishNavBtn" onclick="goPage('shop')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+        <span class="badge" id="wishBadge">0</span>
+      </button>
+      <button class="icon-btn" onclick="goPage('cart')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span class="badge" id="cartBadge">0</span>
+      </button>
+      <button class="icon-btn" onclick="goPage('account')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<section class="page active" id="home">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <div class="hero-eyebrow">New Season Arrivals</div>
+        <h2>Furniture that feels like home.</h2>
+        <p>Thoughtfully designed sofas, tables, and decor — built to last, priced to love. Free delivery on every order over $500.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="goPage('shop')">Shop Now</button>
+          <button class="btn btn-outline" onclick="goPage('shop')">Browse Collections</button>
+        </div>
+      </div>
+      <div class="hero-visual">🛋️</div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="wrap">
+      <div class="strip-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8Z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Free shipping over $500</div>
+      <div class="strip-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>2-year warranty on all pieces</div>
+      <div class="strip-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>30-day easy returns</div>
+      <div class="strip-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>Assembly support included</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div><h3>Shop by Room</h3><div class="sub">Find pieces curated for the space you're decorating</div></div>
+        <span class="see-all" onclick="goPage('shop')">View all →</span>
+      </div>
+      <div class="cat-grid">
+        <div class="cat-card" style="background:#8A6A4E;" onclick="goPage('shop')"><div class="txt"><div class="cname">Living Room</div><div class="ccount">34 pieces</div></div></div>
+        <div class="cat-card" style="background:#5F6E52;" onclick="goPage('shop')"><div class="txt"><div class="cname">Dining Room</div><div class="ccount">18 pieces</div></div></div>
+        <div class="cat-card" style="background:#3D5240;" onclick="goPage('shop')"><div class="txt"><div class="cname">Bedroom</div><div class="ccount">27 pieces</div></div></div>
+        <div class="cat-card" style="background:#AD5A34;" onclick="goPage('shop')"><div class="txt"><div class="cname">Lighting &amp; Decor</div><div class="ccount">21 pieces</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <div><h3>Bestsellers</h3><div class="sub">Loved by 2,000+ customers this month</div></div>
+        <span class="see-all" onclick="goPage('shop')">Shop all →</span>
+      </div>
+      <div class="product-grid" id="homeProductGrid"></div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head"><div><h3>What customers say</h3></div></div>
+      <div class="testi-grid">
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-body">Softer than it looks in photos and holds its shape well. Assembly took about twenty minutes with two people.</div><div class="testi-who">Ananya Desai · Marlowe Boucle Sofa</div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-body">Upgraded from a bed we'd had for years and the difference is night and day. Delivery team was careful and quick.</div><div class="testi-who">Simran Kaur · Linen Cloud Bed Frame</div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★☆</div><div class="testi-body">Solid build and the ash finish looks great in natural light. Wish it came in a taller option.</div><div class="testi-who">Kabir Chandra · Nordic Ply Bookshelf</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="newsletter">
+    <div class="wrap">
+      <h3>Get 10% off your first order</h3>
+      <p>Sign up for restock alerts, new arrivals, and seasonal sales.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="you@email.com">
+        <button class="btn btn-primary">Subscribe</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div><div class="logo"><div class="mark">n</div><h1 style="font-size:18px;">DecoreNest</h1></div><p style="font-size:12.5px;color:var(--forest-soft);max-width:260px;margin-top:10px;">Furniture and decor designed for real, lived-in homes.</p></div>
+        <div><h4>Shop</h4><a onclick="goPage('shop')">Living Room</a><a onclick="goPage('shop')">Bedroom</a><a onclick="goPage('shop')">Dining</a><a onclick="goPage('shop')">Lighting</a></div>
+        <div><h4>Support</h4><a>Shipping Info</a><a>Returns</a><a>Warranty</a><a>Contact Us</a></div>
+        <div><h4>Company</h4><a>About</a><a>Careers</a><a>Sustainability</a><a>Press</a></div>
+      </div>
+      <div class="foot-bottom">© 2026 DecoreNest. All rights reserved.</div>
+    </div>
+  </footer>
+</section>
+
+<!-- SHOP -->
+<section class="page" id="shop">
+  <div class="wrap">
+    <div class="shop-head">
+      <div class="eyebrow">128 products</div>
+      <h2>Shop All Furniture</h2>
+    </div>
+    <div class="shop-layout">
+      <div class="filter-box">
+        <h4>Category</h4>
+        <div class="filter-opt selected" data-filter="all"><input type="checkbox" checked> All Products</div>
+        <div class="filter-opt" data-filter="Sofas & Seating"><input type="checkbox"> Sofas &amp; Seating</div>
+        <div class="filter-opt" data-filter="Tables"><input type="checkbox"> Tables</div>
+        <div class="filter-opt" data-filter="Beds"><input type="checkbox"> Beds</div>
+        <div class="filter-opt" data-filter="Storage"><input type="checkbox"> Storage</div>
+        <div class="filter-opt" data-filter="Lighting & Decor"><input type="checkbox"> Lighting &amp; Decor</div>
+        <hr class="fdiv">
+        <h4>Price</h4>
+        <div class="price-range">Up to $1,500<input type="range" min="50" max="1500" value="1500"></div>
+        <hr class="fdiv">
+        <h4>Rating</h4>
+        <div class="filter-opt"><input type="checkbox"> ★★★★ &amp; up</div>
+        <div class="filter-opt"><input type="checkbox"> ★★★ &amp; up</div>
+      </div>
+      <div>
+        <div class="shop-toolbar">
+          <div class="result-count" id="resultCount">128 results</div>
+          <select class="sort-select" id="sortSelect">
+            <option value="popular">Sort: Most Popular</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+          </select>
+        </div>
+        <div class="product-grid" id="shopProductGrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT DETAIL -->
+<section class="page" id="detail">
+  <div class="wrap">
+    <div class="detail-layout" id="detailContent"></div>
+  </div>
+</section>
+
+<!-- CART -->
+<section class="page" id="cart">
+  <div class="wrap">
+    <div class="shop-head"><h2>Your Cart</h2></div>
+    <div class="cart-layout" id="cartLayout"></div>
+  </div>
+</section>
+
+<!-- CHECKOUT -->
+<section class="page" id="checkout">
+  <div class="wrap">
+    <div class="shop-head"><h2>Checkout</h2></div>
+    <div class="checkout-steps">
+      <div class="cstep active">1. Shipping</div>
+      <div class="cstep">2. Payment</div>
+      <div class="cstep">3. Review</div>
+    </div>
+    <div class="checkout-layout">
+      <div>
+        <div class="form-panel">
+          <h4>Shipping Address</h4>
+          <div class="field-row">
+            <div class="field"><label>First Name</label><input type="text" placeholder="Ananya"></div>
+            <div class="field"><label>Last Name</label><input type="text" placeholder="Desai"></div>
+          </div>
+          <div class="field"><label>Address</label><input type="text" placeholder="221 Willow Street"></div>
+          <div class="field-row">
+            <div class="field"><label>City</label><input type="text" placeholder="Austin"></div>
+            <div class="field"><label>ZIP Code</label><input type="text" placeholder="73301"></div>
+          </div>
+          <div class="field"><label>Phone</label><input type="text" placeholder="+1 (555) 000-0000"></div>
+        </div>
+        <div class="form-panel">
+          <h4>Payment Method</h4>
+          <div class="pay-opts">
+            <div class="pay-opt selected">💳 Card</div>
+            <div class="pay-opt">🅿️ PayPal</div>
+            <div class="pay-opt">💵 Cash on Delivery</div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Card Number</label><input type="text" placeholder="•••• •••• •••• 4242"></div>
+            <div class="field"><label>Expiry</label><input type="text" placeholder="MM / YY"></div>
+          </div>
+        </div>
+      </div>
+      <div class="summary-box">
+        <h4>Order Summary</h4>
+        <div id="checkoutItems"></div>
+        <div class="summary-row"><span>Subtotal</span><span class="mono" id="checkoutSubtotal">$0</span></div>
+        <div class="summary-row"><span>Shipping</span><span class="mono">Free</span></div>
+        <div class="summary-row"><span>Tax (est.)</span><span class="mono" id="checkoutTax">$0</span></div>
+        <div class="summary-row total"><span>Total</span><span class="mono" id="checkoutTotal">$0</span></div>
+        <button class="btn btn-primary btn-full" style="margin-top:16px;" onclick="placeOrder()">Place Order</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCOUNT -->
+<section class="page" id="account">
+  <div class="wrap">
+    <div class="shop-head"><h2>My Orders</h2></div>
+    <div class="account-layout">
+      <div class="account-nav">
+        <a class="active">Order History</a>
+        <a>Saved Addresses</a>
+        <a>Payment Methods</a>
+        <a>Wishlist</a>
+        <a>Account Settings</a>
+      </div>
+      <div>
+        <div class="order-card">
+          <div class="order-top"><span class="oid">#3021</span><span class="odate mono">Jul 20, 2026</span><span class="order-status transit">In Transit</span></div>
+          <div class="order-line"><span>Marlowe Boucle Sofa</span><span class="mono">$1,240</span></div>
+        </div>
+        <div class="order-card">
+          <div class="order-top"><span class="oid">#3018</span><span class="odate mono">Jul 18, 2026</span><span class="order-status">Fulfilled</span></div>
+          <div class="order-line"><span>Nordic Ply Bookshelf</span><span class="mono">$310</span></div>
+        </div>
+        <div class="order-card">
+          <div class="order-top"><span class="oid">#3009</span><span class="odate mono">Jul 05, 2026</span><span class="order-status">Fulfilled</span></div>
+          <div class="order-line"><span>Terracotta Table Lamp ×2</span><span class="mono">$148</span></div>
+          <div class="order-line"><span>Amber Arch Floor Mirror</span><span class="mono">$210</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ---------- product data ----------
+  const products = [
+    {id:1, name:"Marlowe Boucle Sofa", cat:"Sofas & Seating", price:1240, old:null, rating:4.9, reviews:212, emoji:"🛋️", bg:"var(--mustard-dim)", badge:"Bestseller", desc:"A generously cushioned 3-seater upholstered in ivory boucle, built on a solid beech frame for long-term support and comfort.", colors:["#E8DCC8","#8A8377","#3D3A33"]},
+    {id:2, name:"Elm Oak Dining Table", cat:"Tables", price:980, old:1150, rating:4.8, reviews:96, emoji:"🍽️", bg:"var(--sage-dim)", badge:"Sale", desc:"Seats six comfortably. Solid natural oak top with a hand-rubbed finish that highlights the wood's natural grain.", colors:["#C9A876","#786450","#3A2E27"]},
+    {id:3, name:"Hearth Rattan Armchair", cat:"Sofas & Seating", price:389, old:null, rating:4.7, reviews:154, emoji:"🪑", bg:"var(--rust-dim)", badge:null, desc:"Hand-woven natural rattan on a powder-coated steel frame, finished with a plush removable cushion.", colors:["#D8CBAE","#3D3A33"]},
+    {id:4, name:"Linen Cloud Bed Frame", cat:"Beds", price:980, old:null, rating:4.9, reviews:188, emoji:"🛏️", bg:"var(--mustard-dim)", badge:"Bestseller", desc:"A queen-size platform bed upholstered in stonewashed linen with a channel-tufted headboard.", colors:["#D9D2C4","#8A8377","#5B4A3C"]},
+    {id:5, name:"Nordic Ply Bookshelf", cat:"Storage", price:310, old:null, rating:4.6, reviews:64, emoji:"📚", bg:"var(--sage-dim)", badge:null, desc:"Five-tier open shelving in blonde ash plywood, ideal for books, plants, and display objects.", colors:["#D9C9A8","#3D3A33"]},
+    {id:6, name:"Terracotta Table Lamp", cat:"Lighting & Decor", price:74, old:null, rating:4.5, reviews:41, emoji:"💡", bg:"var(--rust-dim)", badge:null, desc:"Hand-glazed ceramic base with a linen drum shade — each piece has subtle, one-of-a-kind glaze marks.", colors:["#B5563A","#D9C9A8"]},
+    {id:7, name:"Woven Storage Ottoman", cat:"Storage", price:128, old:null, rating:4.4, reviews:29, emoji:"🧺", bg:"var(--mustard-dim)", badge:null, desc:"A jute and cotton woven ottoman that doubles as a footrest and hidden storage for throws and blankets.", colors:["#D9C9A8","#E8DCC8"]},
+    {id:8, name:"Amber Arch Floor Mirror", cat:"Lighting & Decor", price:210, old:250, rating:4.8, reviews:77, emoji:"🪞", bg:"var(--sage-dim)", badge:"Sale", desc:"A 65-inch arched floor mirror in a brushed brass frame, freestanding with a stabilizing wall bracket.", colors:["#C9973F","#3D3A33"]},
+    {id:9, name:"Willow Rattan Bar Stool", cat:"Sofas & Seating", price:165, old:null, rating:4.5, reviews:33, emoji:"🪑", bg:"var(--rust-dim)", badge:null, desc:"Counter-height stool with a woven rattan seat and solid oak legs, built for daily kitchen island use.", colors:["#D8CBAE","#786450"]},
+    {id:10, name:"Moss Velvet Accent Chair", cat:"Sofas & Seating", price:420, old:null, rating:4.7, reviews:88, emoji:"🛋️", bg:"var(--mustard-dim)", badge:"New", desc:"A curved-back accent chair in deep moss velvet with brass-finished tapered legs.", colors:["#7C8F6E","#3D3A33"]},
+    {id:11, name:"Birchwood Console Table", cat:"Tables", price:340, old:null, rating:4.6, reviews:52, emoji:"🪵", bg:"var(--sage-dim)", badge:null, desc:"A slim entryway console in solid birch with a lower shelf for baskets or books.", colors:["#D9C9A8","#8A6A4E"]},
+    {id:12, name:"Clara Nightstand Duo", cat:"Beds", price:260, old:310, rating:4.5, reviews:45, emoji:"🕯️", bg:"var(--rust-dim)", badge:"Sale", desc:"Set of two compact nightstands with a single soft-close drawer and open lower shelf.", colors:["#E8DCC8","#3A2E27"]}
+  ];
+
+  let cart = [];       // {id, qty}
+  let wishlist = [];   // ids
+  let currentDetailId = null;
+
+  function fmt(n){ return "$" + n.toLocaleString(undefined,{maximumFractionDigits:0}); }
+
+  function stars(rating){
+    const full = Math.round(rating);
+    return "★".repeat(full) + "☆".repeat(5-full);
+  }
+
+  function productCard(p){
+    const badgeHtml = p.badge ? `<div class="product-badge ${p.badge==='Sale'?'sale':''}">${p.badge}</div>` : '';
+    const oldHtml = p.old ? `<span class="price-old">${fmt(p.old)}</span>` : '';
+    const wished = wishlist.includes(p.id);
+    return `
+      <div class="product-card">
+        <div class="product-art" style="background:${p.bg}" onclick="openDetail(${p.id})">
+          ${badgeHtml}
+          <button class="wish-btn ${wished?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id})">♥</button>
+          ${p.emoji}
+        </div>
+        <div class="product-body">
+          <div class="product-cat">${p.cat}</div>
+          <div class="product-name" onclick="openDetail(${p.id})">${p.name}</div>
+          <div class="product-rating">${stars(p.rating)} <span class="count">(${p.reviews})</span></div>
+          <div class="product-foot">
+            <div class="price-row"><span class="price">${fmt(p.price)}</span>${oldHtml}</div>
+            <button class="add-btn" onclick="addToCart(${p.id})" title="Add to cart">+</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderHomeGrid(){
+    const best = products.filter(p=>p.badge==="Bestseller").concat(products.slice(0,2));
+    const list = [...new Map(best.map(p=>[p.id,p])).values()].slice(0,4);
+    document.getElementById('homeProductGrid').innerHTML = list.map(productCard).join('');
+  }
+
+  let activeCategory = 'all';
+  let activeSort = 'popular';
+
+  function renderShopGrid(){
+    let list = products.filter(p => activeCategory==='all' || p.cat===activeCategory);
+    if(activeSort==='low') list = [...list].sort((a,b)=>a.price-b.price);
+    if(activeSort==='high') list = [...list].sort((a,b)=>b.price-a.price);
+    if(activeSort==='rating') list = [...list].sort((a,b)=>b.rating-a.rating);
+    document.getElementById('shopProductGrid').innerHTML = list.map(productCard).join('');
+    document.getElementById('resultCount').textContent = list.length + " results";
+  }
+
+  document.querySelectorAll('.filter-opt[data-filter]').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-opt[data-filter]').forEach(o=>{o.classList.remove('selected'); o.querySelector('input').checked=false;});
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+      activeCategory = opt.getAttribute('data-filter');
+      renderShopGrid();
+    });
+  });
+  document.getElementById('sortSelect').addEventListener('change', (e)=>{
+    activeSort = e.target.value;
+    renderShopGrid();
+  });
+
+  function toggleWish(id){
+    const i = wishlist.indexOf(id);
+    if(i>-1) wishlist.splice(i,1); else wishlist.push(id);
+    document.getElementById('wishBadge').textContent = wishlist.length;
+    renderHomeGrid(); renderShopGrid();
+    if(document.getElementById('detail').classList.contains('active')) renderDetail();
+  }
+
+  function addToCart(id, qty=1){
+    const existing = cart.find(c=>c.id===id);
+    if(existing) existing.qty += qty; else cart.push({id, qty});
+    updateCartBadge();
+    renderCart();
+  }
+  function updateCartBadge(){
+    document.getElementById('cartBadge').textContent = cart.reduce((s,c)=>s+c.qty,0);
+  }
+  function changeQty(id, delta){
+    const item = cart.find(c=>c.id===id);
+    if(!item) return;
+    item.qty += delta;
+    if(item.qty<=0) cart = cart.filter(c=>c.id!==id);
+    updateCartBadge(); renderCart();
+  }
+  function removeFromCart(id){
+    cart = cart.filter(c=>c.id!==id);
+    updateCartBadge(); renderCart();
+  }
+
+  function cartTotals(){
+    const subtotal = cart.reduce((s,c)=>{
+      const p = products.find(pr=>pr.id===c.id);
+      return s + (p ? p.price*c.qty : 0);
+    },0);
+    const tax = Math.round(subtotal*0.07);
+    return {subtotal, tax, total: subtotal+tax};
+  }
+
+  function renderCart(){
+    const el = document.getElementById('cartLayout');
+    if(cart.length===0){
+      el.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="big">🛒</div><h3>Your cart is empty</h3><p>Browse the shop to find something for your space.</p><button class="btn btn-dark" onclick="goPage('shop')">Continue Shopping</button></div>`;
+      return;
+    }
+    const itemsHtml = cart.map(c=>{
+      const p = products.find(pr=>pr.id===c.id);
+      return `
+        <div class="cart-item">
+          <div class="cart-thumb" style="background:${p.bg}">${p.emoji}</div>
+          <div class="info">
+            <div class="name">${p.name}</div>
+            <div class="meta">${p.cat}</div>
+            <div class="price mono">${fmt(p.price)}</div>
+          </div>
+          <div class="cart-qty">
+            <button onclick="changeQty(${p.id},-1)">−</button>
+            <span>${c.qty}</span>
+            <button onclick="changeQty(${p.id},1)">+</button>
+          </div>
+          <button class="remove-btn" onclick="removeFromCart(${p.id})">Remove</button>
+        </div>`;
+    }).join('');
+    const t = cartTotals();
+    el.innerHTML = `
+      <div>${itemsHtml}</div>
+      <div class="summary-box">
+        <h4>Order Summary</h4>
+        <div class="summary-row"><span>Subtotal</span><span class="mono">${fmt(t.subtotal)}</span></div>
+        <div class="summary-row"><span>Shipping</span><span class="mono">${t.subtotal>500?'Free':'$45'}</span></div>
+        <div class="summary-row"><span>Tax (est.)</span><span class="mono">${fmt(t.tax)}</span></div>
+        <div class="summary-row total"><span>Total</span><span class="mono">${fmt(t.total + (t.subtotal>500?0:45))}</span></div>
+        <div class="promo-row"><input type="text" placeholder="Promo code"><button class="btn btn-outline" style="background:var(--card);border:1px solid var(--line);color:var(--forest);">Apply</button></div>
+        <button class="btn btn-primary btn-full" onclick="goPage('checkout')">Proceed to Checkout</button>
+      </div>`;
+  }
+
+  function renderCheckout(){
+    const t = cartTotals();
+    document.getElementById('checkoutItems').innerHTML = cart.map(c=>{
+      const p = products.find(pr=>pr.id===c.id);
+      return `<div class="mini-item"><span>${p.name} × ${c.qty}</span><span class="mono">${fmt(p.price*c.qty)}</span></div>`;
+    }).join('') || `<div class="mini-item"><span>Your cart is empty</span></div>`;
+    document.getElementById('checkoutSubtotal').textContent = fmt(t.subtotal);
+    document.getElementById('checkoutTax').textContent = fmt(t.tax);
+    document.getElementById('checkoutTotal').textContent = fmt(t.total);
+  }
+
+  function placeOrder(){
+    if(cart.length===0){ alert("Your cart is empty — add something from the shop first."); return; }
+    alert("Order placed! A confirmation has been sent to your email.");
+    cart = [];
+    updateCartBadge();
+    goPage('account');
+  }
+
+  document.querySelectorAll('.pay-opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  function openDetail(id){
+    currentDetailId = id;
+    renderDetail();
+    goPage('detail');
+  }
+
+  function renderDetail(){
+    const p = products.find(pr=>pr.id===currentDetailId);
+    if(!p) return;
+    const wished = wishlist.includes(p.id);
+    const oldHtml = p.old ? `<span class="price-old">${fmt(p.old)}</span>` : '';
+    document.getElementById('detailContent').innerHTML = `
+      <div class="detail-art" style="background:${p.bg}">${p.emoji}</div>
+      <div class="detail-info">
+        <div class="eyebrow">${p.cat}</div>
+        <h2>${p.name}</h2>
+        <div class="detail-rating">${stars(p.rating)} &nbsp;${p.rating} (${p.reviews} reviews)</div>
+        <div class="detail-price"><span class="price">${fmt(p.price)}</span>${oldHtml}</div>
+        <div class="detail-desc">${p.desc}</div>
+        <div class="option-group">
+          <span class="label">Finish</span>
+          <div class="swatch-opts">
+            ${p.colors.map((c,i)=>`<div class="swatch-opt ${i===0?'selected':''}" style="background:${c}" onclick="selectSwatch(this)"></div>`).join('')}
+          </div>
+        </div>
+        <div class="qty-row">
+          <span class="label" style="margin:0;">Quantity</span>
+          <div class="qty-control">
+            <button onclick="stepDetailQty(-1)">−</button><span id="detailQty">1</span><button onclick="stepDetailQty(1)">+</button>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn btn-dark" onclick="addDetailToCart()">Add to Cart</button>
+          <button class="btn btn-outline" style="border-color:var(--line);color:var(--forest);" onclick="toggleWish(${p.id})">${wished?'♥ Wishlisted':'♡ Add to Wishlist'}</button>
+        </div>
+        <div class="spec-list">
+          <div class="spec-row"><span>Category</span><span>${p.cat}</span></div>
+          <div class="spec-row"><span>Rating</span><span>${p.rating} / 5</span></div>
+          <div class="spec-row"><span>Shipping</span><span>Free over $500</span></div>
+          <div class="spec-row"><span>Warranty</span><span>2 years</span></div>
+        </div>
+      </div>`;
+  }
+
+  function selectSwatch(el){
+    el.parentElement.querySelectorAll('.swatch-opt').forEach(s=>s.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  let detailQty = 1;
+  function stepDetailQty(delta){
+    detailQty = Math.max(1, detailQty+delta);
+    document.getElementById('detailQty').textContent = detailQty;
+  }
+  function addDetailToCart(){
+    addToCart(currentDetailId, detailQty);
+    detailQty = 1;
+  }
+
+  // ---------- page routing ----------
+  function goPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const navLink = document.querySelector('.nav-links a[data-page="'+id+'"]');
+    if(navLink) navLink.classList.add('active');
+    if(id==='cart') renderCart();
+    if(id==='checkout') renderCheckout();
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> goPage(a.getAttribute('data-page')));
+  });
+
+  // init
+  renderHomeGrid();
+  renderShopGrid();
+  renderCart();
+</script>
+</body>
+</html>
+
